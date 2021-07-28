@@ -19,16 +19,32 @@ export class RecipesService {
     //         'This is simply a test',
     //         'https://upload.wikimedia.org/wikipedia/commons/1/15/Recipe_logo.jpeg',
     //         [
-    //             new Ingredient('Meat', 1),
-    //             new Ingredient('Bread', 2)
+    //             {
+    //                 name: 'Meat',
+    //                 amount: 1,
+    //                 id: '32'
+    //             },
+    //             {
+    //                 name: 'Bread',
+    //                 amount: 2,
+    //                 id: '33'
+    //             }
     //         ]),
     //     new Recipe(
     //         'A Test Recipe',
     //         'This ',
     //         'https://upload.wikimedia.org/wikipedia/commons/1/15/Recipe_logo.jpeg',
     //         [
-    //             new Ingredient('Meat and bagel', 12),
-    //             new Ingredient('Crumbles', 3)
+    //             {
+    //                 name: 'Meat and bagel',
+    //                 amount: 2,
+    //                 id: '34'
+    //             },
+    //             {
+    //                 name: 'Crumbles',
+    //                 amount: 3,
+    //                 id: '35'
+    //             }
     //         ])
     // ];
 

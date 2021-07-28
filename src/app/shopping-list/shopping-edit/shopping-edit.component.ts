@@ -1,9 +1,11 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { select, Store } from '@ngrx/store';
 import { Subscription } from 'rxjs';
 
 import { Ingredient } from 'src/app/shared/ingredient.model';
-import { ShoppingListService } from '../shopping-list.service';
+import { addToShoppinList, updateShoppinList, deleteShoppinList, updateSelectedIngrId } from '../store/shopping-list.actions';
+import { selectSelectedIngr } from '../store/shopping-list.selector';
 
 @Component({
   selector: 'app-shopping-edit',
@@ -16,41 +18,56 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   // @ViewChild('f', { static: true }) ingForm: NgForm;
   // @ViewChild('amountInput', {static: true}) amoountInput: ElementRef;
   selectedIngredientSubscription: Subscription;
-  editedIngredient: Ingredient;
-  editedIngredientIndex: number;
   isEdit: boolean = false;
+
+  selectedIngrIdFromStat$ = this.store.pipe(select(selectSelectedIngr));
+  // getIngrSubscription = (id) => this.store.pipe(select(getIngredientById(id)));
+
+  selectedIngrFromState$: Ingredient;
 
   ingForm = this.fb.group({
     name: ['', [Validators.required]],
     amount: ['', [Validators.required, Validators.min(1)]],
   })
 
-  constructor(private shoppingListService: ShoppingListService, private fb: FormBuilder) { }
+  constructor(
+    private fb: FormBuilder,
+    private store: Store) { }
 
   ngOnInit() {
-    this.selectedIngredientSubscription = this.shoppingListService.selectedIngredient
-      .subscribe((index: number) => {
-        this.editedIngredientIndex = index;
-        this.editedIngredient = this.shoppingListService.getIngredientById(index);
+    this.selectedIngredientSubscription = this.selectedIngrIdFromStat$.subscribe(selectedIngrId => {
+      if (selectedIngrId) {
+        this.selectedIngrFromState$ = selectedIngrId;
         this.isEdit = true;
         this.ingForm.setValue({
-          name: this.editedIngredient.name,
-          amount: this.editedIngredient.amount
+          name: selectedIngrId.name,
+          amount: selectedIngrId.amount
         });
-      })
+      }
+    });
   }
+
 
   ngOnDestroy() {
     this.selectedIngredientSubscription.unsubscribe();
   }
 
-  onAddIngredient() {
+
+  onAddOrUpdateIngredient() {
     const { name, amount } = this.ingForm.value;
-    const newIngrediant: Ingredient = new Ingredient(name, amount);
+    const newIngredient: Ingredient = {
+      name,
+      amount,
+      id: this.isEdit ? this.selectedIngrFromState$.id : new Date().toString()
+    };
     if (this.isEdit) {
-      this.shoppingListService.updateIngredient(this.editedIngredientIndex, newIngrediant);
+      this.store.dispatch(updateShoppinList(
+        {
+          updatedIngredient: newIngredient
+        }
+      ));
     } else {
-      this.shoppingListService.addIngr(newIngrediant);
+      this.store.dispatch(addToShoppinList({ newIngredients: [newIngredient] }));
     }
     this.onClear();
   }
@@ -58,11 +75,13 @@ export class ShoppingEditComponent implements OnInit, OnDestroy {
   onClear() {
     this.ingForm.reset();
     this.isEdit = false;
+    this.store.dispatch(updateSelectedIngrId(null));
+
   }
 
   onDelete() {
-    if (this.editedIngredientIndex !== undefined) {
-      this.shoppingListService.deleteIngredient(this.editedIngredientIndex);
+    if (this.selectedIngrFromState$ !== undefined) {
+      this.store.dispatch(deleteShoppinList());
       this.onClear();
     }
   }

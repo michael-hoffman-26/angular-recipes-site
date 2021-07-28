@@ -1,8 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { select, Store } from '@ngrx/store';
+import { Observable } from 'rxjs';
 
 import { Ingredient } from '../shared/ingredient.model';
+import { AppState } from '../store/app.reducer';
 import { ShoppingListService } from './shopping-list.service';
+import { selectShoppingListIngr, selectSelectedIngrId } from './store/shopping-list.selector';
+import { updateSelectedIngrId } from './store/shopping-list.actions';
 
 @Component({
   selector: 'app-shopping-list',
@@ -10,32 +14,14 @@ import { ShoppingListService } from './shopping-list.service';
   styleUrls: ['./shopping-list.component.css'],
   providers: [ShoppingListService]
 })
-export class ShoppingListComponent implements OnInit, OnDestroy {
-  ingredients: Ingredient[] = [];
-  ingredientsUpdateSubscription: Subscription;
+export class ShoppingListComponent {
+  ingredients$: Observable<Ingredient[]> = this.store.pipe(select(selectShoppingListIngr));
+  selectedIngrId$: Observable<string> = this.store.pipe(select(selectSelectedIngrId));
 
-  constructor(private shoppingListService: ShoppingListService) { }
+  constructor(private store: Store<AppState>) { }
 
-  ngOnInit() {
-    this.ingredients = this.shoppingListService.getIngr();
-    this.ingredientsUpdateSubscription = this.shoppingListService.ingredientChanged.subscribe(
-      (ingredients: Ingredient[]) => {
-        this.ingredients = ingredients
-      }
-    )
-  }
-
-  handleAddIngr(event: Ingredient) {
-    this.ingredients.push(event);
-    console.log('in shopping list:', event)
-  }
-
-  ngOnDestroy(): void {
-    this.ingredientsUpdateSubscription.unsubscribe();
-  }
-
-  onIngredientSelected(index: number): void {
-    this.shoppingListService.selectedIngredient.next(index);
+  onIngredientSelected(ingrId: string): void {
+    this.store.dispatch(updateSelectedIngrId({ selectedIngId: ingrId }))
   }
 
 }
