@@ -29,12 +29,13 @@ export class RecipeEditComponent implements OnInit {
   createIngredient(ingredient: Ingredient): FormGroup {
     return this.fb.group({
       name: [ingredient.name, [Validators.required]],
-      amount: [ingredient.amount, [Validators.required, Validators.min(1)]]
+      amount: [ingredient.amount, [Validators.required, Validators.min(1)]],
+      id: [ingredient.id] // We need the value in the form.value... so I added it here
     });
   }
 
   constructor(private route: ActivatedRoute, private fb: FormBuilder,
-    private recipeServive: RecipesService) { }
+    private recipeService: RecipesService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(
@@ -42,7 +43,7 @@ export class RecipeEditComponent implements OnInit {
         this.id = +params['id'];
         this.editMode = params['id'] !== undefined;
         if (this.editMode) {
-          this.recipe = this.recipeServive.getRecipe(this.id);
+          this.recipe = this.recipeService.getRecipe(this.id);
           this.editRecipeForm.patchValue({
             name: this.recipe.name,
             description: this.recipe.description,
@@ -57,17 +58,13 @@ export class RecipeEditComponent implements OnInit {
   }
 
   onDeleteIngredient(ingrIndex: number) {
-    // this.recipe?.ingredients.splice(ingrIndex, 1);
     this.formIngredientsArray.removeAt(ingrIndex);
   }
 
   onSubmit() {
     this.editMode ?
-      this.recipeServive.updateRecipe(this.id, this.editRecipeForm.value)
-      : this.recipeServive.addRecipe(this.editRecipeForm.value)
-
-    // this.editRecipeForm.reset();
-    // console.log(this.editRecipeForm.value);
+      this.recipeService.updateRecipe(this.id, this.editRecipeForm.value)
+      : this.recipeService.addRecipe(this.editRecipeForm.value);
   }
 
   get ingrControls() {
@@ -76,7 +73,7 @@ export class RecipeEditComponent implements OnInit {
 
   onAddIngredient() {
     this.formIngredientsArray.push(
-      this.createIngredient(new Ingredient('', 1))
+      this.createIngredient({ name: '', amount: 1, id: new Date().toString() })
     )
   }
 
