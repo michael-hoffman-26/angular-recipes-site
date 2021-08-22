@@ -4,7 +4,7 @@ import { Store } from '@ngrx/store';
 import { addToShoppinList } from 'src/app/shopping-list/store/shopping-list.actions';
 
 import { Recipe } from '../recipe.model';
-import { RecipesService } from '../recipes.servise';
+import { RecipesService } from '../recipes.service';
 
 @Component({
   selector: 'app-recipe-detail',

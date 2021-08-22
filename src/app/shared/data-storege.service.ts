@@ -2,7 +2,7 @@
 // import { HttpClient } from '@angular/common/http';
 // import { map, tap } from 'rxjs/operators'
 
-// import { RecipesService } from '../recipes/recipes.servise';
+// import { RecipesService } from '../recipes/recipes.service';
 // import { Recipe } from '../recipes/recipe.model';
 // import { Subscription } from 'rxjs';
 
