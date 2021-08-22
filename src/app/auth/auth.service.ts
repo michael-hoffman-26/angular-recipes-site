@@ -19,7 +19,6 @@ export interface AuthResponseData {
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   user = new BehaviorSubject<User>(null);
-  // private AUTH_FIREBASE_URL = 'http://127.0.0.2:3333/fake-login-service';
   private AUTH_FIREBASE_URL_SIGN_UP = 'https://identitytoolkit.googleapis.com/v1/accounts:signUp';
   private AUTH_FIREBASE_URL_SIGN_IN = 'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword';
   private FIRE_BASE_KEY = environment.fireBaseApiKey;
@@ -78,7 +77,6 @@ export class AuthService {
 
   private handleAuthentication(resData: AuthResponseData) {
 
-    // console.log(resData);
     const EXPIRE_IN: number = +resData.expiresIn * 1000;
     const expirationDate = new Date(
       new Date().getTime() +
@@ -90,17 +88,11 @@ export class AuthService {
       resData.idToken,
       expirationDate);
 
-    // const user = new User(
-    //   'resData.email',
-    //   'resData.localId',
-    //   'resData.idToken',
-    //   expirationDate);
-
     this.user.next(user);
     this.autoLogout(EXPIRE_IN);
     localStorage.setItem('userData', JSON.stringify(user));
   }
-  // Access-Control - Allow - Origin
+
   login(email: string, password: string) {
     const params = new HttpParams().set('key', this.FIRE_BASE_KEY);
 
