@@ -7,7 +7,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { ShoppingListService } from './shopping-list/shopping-list.service';
-import { RecipesService } from './recipes/recipes.servise';
+import { RecipesService } from './recipes/recipes.service';
 import { AuthInterceptorService } from './auth/auth-interceptor.service';
 import { SharedModule } from './shared/shared.module';
 import * as fromApp from './store/app.reducer';

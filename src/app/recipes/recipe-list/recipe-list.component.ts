@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnDestroy, OnInit, Output } from '@angular/cor
 import { Subscription } from 'rxjs';
 
 import { Recipe } from '../recipe.model';
-import { RecipesService } from '../recipes.servise';
+import { RecipesService } from '../recipes.service';
 
 @Component({
   selector: 'app-recipe-list',
