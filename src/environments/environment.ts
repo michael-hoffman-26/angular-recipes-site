@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  fireBaseApiKey: 'AIzaSyAQ5haE5Hsci_BwmF6QlU47LdQ77Odbi0k'
+  fireBaseApiKey: 'SECRET'
 };
 
 /*
@@ -14,4 +14,4 @@ export const environment = {
  * This import should be commented out in production mode because it will have a negative impact
  * on performance if an error is thrown.
  */
-// import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+// import 'zone.js/plugins/zone-error';   ff  s  // Included with Angular CLI.
